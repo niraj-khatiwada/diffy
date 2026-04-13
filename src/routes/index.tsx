@@ -6,7 +6,7 @@ import {
 } from "@pierre/diffs/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { useHtmlTheme } from "#/hooks/useHTMLTheme";
+import { useHtmlTheme } from "~/hooks/useHTMLTheme";
 import { workerFactory } from "../utils/worker-factory";
 
 export const Route = createFileRoute("/")({ component: App });
@@ -44,10 +44,10 @@ function App() {
 		const value = files[side];
 
 		return (
-			<div className="flex flex-col gap-2">
+			<div className="flex flex-col gap-2 w-full h-full">
 				<button
 					type="button"
-					className={`h-full border border-dashed border-zinc-300 dark:border-zinc-800 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-800/10 transition-colors ${value ? "border-primary" : ""}`}
+					className={`w-full h-full border border-zinc-300 dark:border-zinc-800 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-800/10 transition-colors ${value ? "border-primary" : ""}`}
 					onClick={() => inputRefs[side].current?.click()}
 					onDragOver={(e) => e.preventDefault()}
 					onDrop={(e) => {
