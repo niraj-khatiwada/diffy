@@ -1,5 +1,5 @@
 {
-  "name": "diffviewer-2",
+  "name": "diffviewer",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
     "check": "biome check"
   },
   "dependencies": {
+    "@pierre/diffs": "^1.1.15",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",
@@ -20,8 +21,7 @@
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tailwindcss": "^4.1.18",
-    "@pierre/diffs": "^1.1.15"
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
@@ -44,5 +44,6 @@
       "esbuild",
       "lightningcss"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.0.0"
 }
