@@ -35,11 +35,11 @@ body {
 }
 
 ::-moz-selection {
-  color: var(--color-primary);
+  background-color:  var(--color-primary);
 }
 
 ::selection {
-  color: var(--color-primary);
+  background-color:  var(--color-primary);
 }
 
 

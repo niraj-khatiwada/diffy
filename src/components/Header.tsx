@@ -17,7 +17,7 @@ export default function Header() {
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
 						>
-							<title>Diff Viewer Logo</title>
+							<title>Diffy Logo</title>
 							<g clip-path="url(#clip0_4118_2)">
 								<path
 									d="M2 4H11V5H3V20H11V21H2V4ZM12 23H13V2H12V23ZM14 12H18.08L16.54 10.46L17.46 9.54L20.42 12.5L17.46 15.46L16.54 14.54L18.08 13H14V21H23V4H14V12Z"
@@ -31,7 +31,7 @@ export default function Header() {
 								</clipPath>
 							</defs>
 						</svg>
-						Diff Viewer
+						Diffy
 					</Link>
 				</h2>
 				<div className="mb-0.5">
