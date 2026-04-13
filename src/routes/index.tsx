@@ -15,6 +15,7 @@ type Side = "left" | "right";
 
 function App() {
 	const themeType = useHtmlTheme();
+
 	const [files, setFiles] = useState<{
 		left: FileContents | null;
 		right: FileContents | null;

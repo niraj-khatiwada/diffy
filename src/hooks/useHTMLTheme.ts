@@ -4,11 +4,14 @@ type Theme = "light" | "dark";
 
 export function useHtmlTheme(): Theme {
 	const [theme, setTheme] = useState<Theme>(() => {
-		return typeof window !== "undefined"
-			? document.documentElement.classList.contains("dark")
-				? "dark"
-				: "light"
-			: "dark";
+		if (typeof window === "undefined") return "dark";
+
+		const el = document.documentElement;
+
+		if (el.classList.contains("dark")) return "dark";
+		if (el.classList.contains("light")) return "light";
+
+		return "light";
 	});
 
 	useEffect(() => {
