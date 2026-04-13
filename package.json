@@ -9,7 +9,8 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check"
+    "check": "biome check",
+    "pwa:generate-assets": "pwa-assets-generator --preset minimal-2023 public/icon.png"
   },
   "dependencies": {
     "@pierre/diffs": "^1.1.15",
@@ -21,7 +22,8 @@
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "workbox-window": "^7.4.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
@@ -37,6 +39,7 @@
     "jsdom": "^28.1.0",
     "typescript": "^5.7.2",
     "vite": "^8.0.0",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^3.0.5"
   },
   "pnpm": {

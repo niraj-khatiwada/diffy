@@ -1,6 +1,11 @@
+import { registerSW } from "virtual:pwa-register";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
+
+registerSW({
+	immediate: true,
+});
 
 const router = createRouter({
 	routeTree,
