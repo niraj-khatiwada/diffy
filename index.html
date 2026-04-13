@@ -5,22 +5,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Diffy: Diff Viewer</title>
+  <link rel="alternate" type="application/rssxml" title="Diffy: Diff Viewer"
+    href="https://diffy.codeforreal.com/rss.xml">
+  <link rel="canonical" href="https://diffy.codeforreal.com/">
+  <!-- Primary Meta Tags -->
+  <title>Diffy: Diff Viewer</title>
+  <meta name="title" content="Diffy: Diff Viewer">
+  <meta name="description"
+    content="Diffy is a simple diff viewer for comparing text files.">
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://diffy.codeforreal.com/">
+  <meta property="og:title" content="Diffy: Diff Viewer">
+  <meta property="og:description"
+    content="Diffy is a simple diff viewer for comparing text files.">
+  <meta property="og:image" content="https://diffy.codeforreal.com/og.jpg">
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://diffy.codeforreal.com/">
+  <meta property="twitter:title" content="Diffy: Diff Viewer">
+  <meta property="twitter:description"
+    content="Diffy is a simple diff viewer for comparing text files.">
+  <meta property="twitter:image" content="https://diffy.codeforreal.com/og.jpg">
 </head>
+
 <body>
   <div id="app"></div>
   <script type="module" src="/src/main.tsx"></script>
   <script>
-  (()=> {
-    const stored = localStorage.getItem("theme");
+    (() => {
+      const stored = localStorage.getItem("theme");
 
-    const isDark =
-      stored === "dark" ||
-      (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      const isDark =
+        stored === "dark" ||
+        (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-    document.documentElement.classList.toggle("dark", isDark);
-    document.documentElement.classList.toggle("light", !isDark);
-  })();
-</script>
+      document.documentElement.classList.toggle("dark", isDark);
+      document.documentElement.classList.toggle("light", !isDark);
+    })();
+  </script>
 </body>
 
 </html>
