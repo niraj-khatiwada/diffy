@@ -1,4 +1,3 @@
-import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
 	return (
@@ -33,9 +32,6 @@ export default function Header() {
 						Diffy
 					</a>
 				</h2>
-				<div className="mb-0.5">
-					<ThemeToggle />
-				</div>
 			</nav>
 		</header>
 	);
