@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
@@ -6,8 +5,8 @@ export default function Header() {
 		<header className="sticky top-0 z-50 backdrop-blur-lg">
 			<nav className="page-wrap flex flex-wrap items-center justify-between gap-1">
 				<h2 className="m-0 shrink-0 text-base font-semibold tracking-tight">
-					<Link
-						to="/"
+					<a
+						href="/"
 						className="inline-flex items-center gap-2 rounded-full text-md no-underline"
 					>
 						<svg
@@ -32,7 +31,7 @@ export default function Header() {
 							</defs>
 						</svg>
 						Diffy
-					</Link>
+					</a>
 				</h2>
 				<div className="mb-0.5">
 					<ThemeToggle />

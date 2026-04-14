@@ -19,7 +19,7 @@ const config = defineConfig({
 		VitePWA({
 			registerType: "autoUpdate",
 			manifest: {
-				name: "Diffy – Diff Viewer",
+				name: "Diffy",
 				short_name: "Diffy",
 				description: "Advanced diff viewer for comparing text files",
 				theme_color: "#FF6D1F",
