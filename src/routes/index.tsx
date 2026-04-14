@@ -6,7 +6,7 @@ import {
 	Virtualizer,
 	WorkerPoolContextProvider,
 } from "@pierre/diffs/react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Switch } from "~/components/Switch";
 import { Tabs } from "~/components/Tabs";
@@ -181,10 +181,6 @@ function App() {
 		(range: SelectedLineRange | null) => {
 			setSelectedRange(range);
 			if (range == null) return;
-			const derivedSide = range.endSide ?? range.side;
-			const side: AnnotationSide =
-				derivedSide === 'deletions' ? 'deletions' : 'additions';
-			addComment(side, Math.max(range.end, range.start));
 		},
 		[addComment]
 	);
@@ -254,7 +250,7 @@ function App() {
 
 	return (
 		<main className="relative page-wrap w-full h-full pt-3 pb-10">
-			<section className="absolute -top-7.5 right-0 z-51 flex items-center gap-2">
+			<section className="md:absolute md:-top-7.5 md:right-0 z-51 flex items-center justify-center md:justify-between gap-2 mb-4 md:mb-0">
 				<Settings settings={settings} setSettings={setSettings} />
 				<ThemeToggle />
 			</section>
@@ -287,7 +283,13 @@ function App() {
 								renderAnnotation={(annotation) => <Comment {...annotation} onSubmit={handleSubmitComment} onCancel={handleCancelComment} onEditRequest={(side, lineNumber) => {
 									setEditComment({ lineNumber, side })
 								}} isEditMode={editComment?.lineNumber === annotation.lineNumber && editComment?.side === annotation.side} onDelete={handleDelete} />}
-								renderGutterUtility={() => <button className="cursor-pointer" title="Add a comment">
+								renderGutterUtility={(getHoveredLine) => <button className="cursor-pointer" title="Add a comment" onClick={() => {
+									const line = getHoveredLine?.()
+									if (line) {
+										setSelectedRange(null)
+										addComment(line.side, line.lineNumber);
+									}
+								}}>
 									<svg width={22} className="text-primary! bg-zinc-100 dark:bg-zinc-800" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<g id="SVGRepo_iconCarrier">
 											<path d="M12 8V14M15 11H9M12.2896 17.9984C18.0965 17.9343 21 15.9189 21 11C21 6 18 4 12 4C6 4 3 6 3 11C3 14.0771 4.13623 16.018 6.40868 17.0557L5 21L12.2896 17.9984Z" stroke="currentColor" stroke-width="1.344" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -387,6 +389,19 @@ function Comment({
 		setValue(metadata.comment)
 	}, [side, lineNumber, onCancel, isEditMode, metadata.comment]);
 
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+			const isSubmit =
+				(e.ctrlKey || e.metaKey) && e.key === "Enter";
+
+			if (isSubmit) {
+				e.preventDefault();
+				handleSubmit();
+			}
+		},
+		[handleSubmit]
+	);
+
 
 	const resize = useCallback(() => {
 		const el = textareaRef.current;
@@ -409,13 +424,15 @@ function Comment({
 
 	if (metadata.comment.length > 0 && !isEditMode) {
 		return (
-			<div className="relative px-3 pt-8 py-2 text-sm text-foreground bg-zinc-200 dark:bg-zinc-700 rounded-xl max-h-75 overflow-auto" role="button" tabIndex={0}>
-				{metadata.comment}
-				<div className="absolute w-full py-1 px-2 top-0 left-0 bg-zinc-300 dark:bg-zinc-800 flex items-center gap-2">
-					<p className="text-xs">Comment on line {lineNumber} of {side}</p>
-					<div className="flex items-center ml-auto">
-						<button className="cursor-pointer px-2 flex items-center text-xs" onClick={() => onEditRequest?.(side, lineNumber)}>Edit <svg width={14} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <polygon points="1.75 11.25,1.75 14.25,4.75 14.25,14.25 4.75,11.25 1.75"></polygon> <line x1="8.75" y1="4.75" x2="11.25" y2="7.25"></line> </g></svg></button>
-						<button className="cursor-pointer pl-2 flex items-center text-xs" onClick={() => onDelete?.(side, lineNumber)}>Delete <svg width={14} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M18.8332 8.5L18.3732 15.3991C18.1962 18.054 18.1077 19.3815 17.2427 20.1907C16.3777 21 15.0473 21 12.3865 21H11.6132C8.95235 21 7.62195 21 6.75694 20.1907C5.89194 19.3815 5.80344 18.054 5.62644 15.3991L5.1665 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M9.1709 4C9.58273 2.83481 10.694 2 12.0002 2C13.3064 2 14.4177 2.83481 14.8295 4" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> </g></svg></button>
+			<div className="relative pl-3 pt-12 py-2 text-sm text-foreground bg-zinc-200 dark:bg-zinc-800 rounded-xl overflow-hidden m-2" role="button" tabIndex={0}>
+				<div className="w-full max-h-75 overflow-auto pr-2 text-xs">
+					{metadata.comment}
+				</div>
+				<div className="absolute w-full py-1.5 px-2 top-0 left-0 bg-zinc-300 dark:bg-zinc-700 flex items-center gap-2">
+					<p className="text-xs">Comment at line {lineNumber} on {side === "additions" ? "right" : "left"}</p>
+					<div className="flex items-center ml-auto gap-2">
+						<button className="cursor-pointer px-2 flex items-center text-xs bg-zinc-100 dark:bg-zinc-800 py-1.5 rounded-3xl" onClick={() => onEditRequest?.(side, lineNumber)}><svg width={12} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <polygon points="1.75 11.25,1.75 14.25,4.75 14.25,14.25 4.75,11.25 1.75"></polygon> <line x1="8.75" y1="4.75" x2="11.25" y2="7.25"></line> </g></svg></button>
+						<button className="cursor-pointer px-2 flex items-center text-xs bg-zinc-100 dark:bg-zinc-800 py-1.5 rounded-3xl" onClick={() => onDelete?.(side, lineNumber)}><svg width={12} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.5001 6H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M18.8332 8.5L18.3732 15.3991C18.1962 18.054 18.1077 19.3815 17.2427 20.1907C16.3777 21 15.0473 21 12.3865 21H11.6132C8.95235 21 7.62195 21 6.75694 20.1907C5.89194 19.3815 5.80344 18.054 5.62644 15.3991L5.1665 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M9.1709 4C9.58273 2.83481 10.694 2 12.0002 2C13.3064 2 14.4177 2.83481 14.8295 4" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> </g></svg></button>
 					</div>
 				</div>
 			</div>
@@ -424,26 +441,27 @@ function Comment({
 
 
 	return (
-		<div className="px-3 py-2 z-2 bg-zinc-100 dark:bg-zinc-900">
+		<div className="px-3 py-2 z-2 bg-zinc-100 dark:bg-zinc-900 rounded-xl">
 			<div className="w-full">
-				<div className="rounded-xl border bg-card shadow-sm">
+				<div className="rounded-xl border bg-card shadow-xl border-zinc-400 dark:border-zinc-700">
 					<div className="p-3">
 						<textarea
 							ref={textareaRef}
 							value={value}
 							onChange={(e) => setValue(e.target.value)}
+							onKeyDown={handleKeyDown}
 							placeholder="Leave a comment…"
-							className="bg-white dark:bg-black
+							className="
 								w-full min-h-20 resize-none max-h-[70vh]
 								rounded-md border bg-background px-3 py-2 text-sm
 								text-foreground placeholder:text-muted-foreground
-								focus:outline-none focus:ring-1
+								focus:outline-none border-zinc-400 dark:border-zinc-700
 							"
 						/>
 
 						<div className="mt-3 flex items-center justify-between">
 							<span className="text-xs text-muted-foreground">
-								Line {lineNumber}
+								Comment at line {lineNumber} on {side === "additions" ? "right" : "left"}
 							</span>
 
 							<div className="flex items-center gap-2">

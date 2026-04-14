@@ -2,7 +2,7 @@
 export default function Header() {
 	return (
 		<header className="sticky top-0 z-50 backdrop-blur-lg">
-			<nav className="page-wrap flex flex-wrap items-center justify-between gap-1">
+			<nav className="page-wrap flex flex-wrap items-center justify-center md:justify-between gap-1">
 				<h2 className="m-0 shrink-0 text-base font-semibold tracking-tight">
 					<a
 						href="/"
