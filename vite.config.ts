@@ -22,7 +22,7 @@ const config = defineConfig({
 				name: "Diffy",
 				short_name: "Diffy",
 				description: "Advanced diff viewer for comparing text files",
-				theme_color: "#71717b",
+				theme_color: "#3f3f46",
 				display: "standalone",
 				start_url: "/",
 				icons: [
