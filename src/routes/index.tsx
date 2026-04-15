@@ -13,7 +13,8 @@ import { Tabs } from "~/components/Tabs";
 import ThemeToggle from "~/components/ThemeToggle";
 import { useHtmlTheme } from "~/hooks/useHTMLTheme";
 import { workerFactory } from "../utils/worker-factory";
-import type { SelectedLineRange } from "@pierre/diffs";
+import { preloadHighlighter, type SelectedLineRange } from "@pierre/diffs";
+import Footer from "~/components/Footer";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -22,8 +23,49 @@ type DiffSettings = {
 	diffStyle: "unified" | "split";
 	wrapLine: boolean;
 	disableLineNumbers: boolean;
+	disableBackground: boolean;
 };
 type AnnotationMetadata = { key: string, comment: string }
+
+preloadHighlighter({
+	themes: ['pierre-dark', 'pierre-light'],
+	langs: [
+		'javascript',
+		'typescript',
+		'html',
+		'css',
+		'json',
+		'yaml',
+		'xml',
+		'python',
+		'java',
+		'c',
+		'cpp',
+		'csharp',
+		'go',
+		'rust',
+		'php',
+		'ruby',
+		'kotlin',
+		'swift',
+		'bash',
+		'shell',
+		'powershell',
+		'sql',
+		'graphql',
+		'haskell',
+		'elixir',
+		'clojure',
+		'scala',
+		'dart',
+		'dockerfile',
+		'nginx',
+		'toml',
+		'ini',
+		'markdown',
+		'latex',
+	]
+}).then(() => null).catch(() => null)
 
 function App() {
 	const themeType = useHtmlTheme();
@@ -40,6 +82,7 @@ function App() {
 		diffStyle: "split",
 		wrapLine: false,
 		disableLineNumbers: false,
+		disableBackground: false,
 	});
 	const [annotations, setAnnotations] = useState<DiffLineAnnotation<AnnotationMetadata>[]>([])
 	const [selectedRange, setSelectedRange] = useState<SelectedLineRange | null>(
@@ -249,8 +292,8 @@ function App() {
 	}, [focusedPane]);
 
 	return (
-		<main className="relative page-wrap w-full h-full pt-3 pb-10">
-			<section className="md:absolute md:-top-7.5 md:right-0 z-51 flex items-center justify-center md:justify-between gap-2 mb-4 md:mb-0">
+		<main className="relative page-wrap w-full h-[90%] md:h-full pt-3 pb-10">
+			<section className="md:absolute md:-top-7.5 md:right-0 z-51 flex flex-wrap items-center justify-center md:justify-between gap-2 mb-4 md:mb-0">
 				<Settings settings={settings} setSettings={setSettings} />
 				<ThemeToggle />
 			</section>
@@ -275,6 +318,7 @@ function App() {
 									diffStyle: settings.diffStyle,
 									overflow: settings.wrapLine ? "wrap" : "scroll",
 									disableLineNumbers: settings.disableLineNumbers,
+									disableBackground: settings.disableBackground,
 									enableGutterUtility: true,
 									enableLineSelection: true,
 									onLineSelectionEnd: handleLineSelectionEnd,
@@ -301,10 +345,15 @@ function App() {
 					</WorkerPoolContextProvider>
 				</>
 			) : (
-				<div className="grid grid-cols-2 gap-4 h-full">
-					{renderPane({ side: "left" })}
-					{renderPane({ side: "right" })}
-				</div>
+				<>
+					<div className="grid grid-cols-2 gap-4 h-full">
+						{renderPane({ side: "left" })}
+						{renderPane({ side: "right" })}
+					</div>
+					<div className="fixed left-1/2 bottom-2 -translate-x-1/2 opacity-25 dark:opacity-100">
+						<Footer />
+					</div>
+				</>
 			)}
 		</main>
 	);
@@ -326,11 +375,19 @@ function Settings({
 				}
 				label="Line Numbers"
 			/>
+			<span className="w-px h-4 bg-zinc-300 dark:bg-zinc-700" />
 			<Switch
 				checked={settings.wrapLine}
 				onChange={() => setSettings((s) => ({ ...s, wrapLine: !s.wrapLine }))}
 				label="Wrap Line"
 			/>
+			<span className="w-px h-4 bg-zinc-300 dark:bg-zinc-700" />
+			<Switch
+				checked={!settings.disableBackground}
+				onChange={() => setSettings((s) => ({ ...s, disableBackground: !s.disableBackground }))}
+				label="Background Color"
+			/>
+			<span className="w-px h-4 bg-zinc-300 dark:bg-zinc-700" />
 			<Tabs
 				value={settings.diffStyle}
 				onChange={(val) => {
@@ -338,7 +395,7 @@ function Settings({
 				}}
 				items={[
 					{ key: "split", label: "Split" },
-					{ key: "unified", label: "Stacked" },
+					{ key: "unified", label: "Stack" },
 				]}
 			/>
 		</>
